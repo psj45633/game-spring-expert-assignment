@@ -31,7 +31,14 @@ public class ChatService {
     @Transactional
     public ChatMessageResponse saveMessage(Long worldId, String sender, String content) {
         // TODO Lv 5: 채팅을 저장하고 savedResponse(worldId, saved)의 결과를 반환합니다.
-        throw new UnsupportedOperationException("Lv 5: 채팅 저장을 구현하세요.");
+        World world = worldRepository.findById(worldId).orElseThrow(()->
+                new NotFoundException("WORLD_NOT_FOUND"));
+
+        ChatMessage message = new ChatMessage(world,sender,content);
+        ChatMessage saved = chatMessageRepository.save(message);
+
+
+        return savedResponse(worldId,saved);
     }
 
     @Transactional(readOnly = true)
