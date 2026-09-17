@@ -5,6 +5,7 @@ import com.gameexpert.chat.event.ChatSavedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import com.gameexpert.chat.repository.ChatMessageRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -53,7 +54,13 @@ public class ChatService {
                 .findByWorldIdOrderByCreatedAtDescIdDesc(worldId, PageRequest.of(0, capped));
 
         // TODO Lv 5: recent를 오래된 순서로 바꾸고 응답 DTO 목록으로 반환합니다.
-        return List.of();
+        Collections.reverse(recent);
+
+        return recent.stream().map(message -> new ChatMessageResponse(
+                message.getSenderNickname(),
+                message.getContent(),
+                message.getCreatedAt()
+        )).toList();
     }
 
     private ChatMessageResponse savedResponse(Long worldId, ChatMessage saved) {
