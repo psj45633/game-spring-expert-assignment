@@ -50,12 +50,14 @@ public class MessageRouter {
         JsonNode typeNode = message.get("type");
         String type = typeNode != null && typeNode.isString() ? typeNode.asString() : null;
         EngineMessageHandler handler = findHandler(type);
+
         if (handler == null) {
             error(context, "UNKNOWN_TYPE");
             return;
         }
         try {
             // TODO Lv 11: handler에 context와 message를 전달해 handle()을 호출합니다.
+            handler.handle(context,message);
         } catch (ActionQueueOverflowException exception) {
             log.warn("액션 큐 상한 초과로 거부: type={}, world={}, nickname={}",
                     type, context.worldId(), context.nickname());
